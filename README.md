@@ -7,28 +7,47 @@ Bootstrap with knockout js
 Widgets
 ========
 
+Button groups
+--
+
+Dropdown buttons  
+--
+
 
 Buttons 
 --
   
-Button style - can be given
-Button size - it can be given, when making a button  
+  
+Properties:  
+Button style - can be given   
+Button size - it can be given, when making a button    
+Block level buttons   
 Disabled state - it can depend on a computed  
 Icons on button - can be multiple icons, which are choosen by a computed  
-Block level buttons  
-Button groups  
-Dropdown buttons    
+
+Callback:
+Click
+ 
+
   
 Navbars
 --
-
+Properties:
 Basic navbar  
-Fixed navbar  
+Fixed navbar
+
+Possible child widgets:
+Buttons
+Button Groups
+Dropdown Buttons
   
   
-Forms
+Forms - Input field
 --
-  
+Properties:
 Password input field - checking if passwords are equal  
 Username input field - checking if username is free or not
   
+Callback:
+On key down
+On focus
