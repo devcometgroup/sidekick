@@ -14,7 +14,7 @@ Buttons
 Button style - can be given
 Button size - it can be given, when making a button  
 Disabled state - it can depend on a computed  
-Icons on button - can be multiple icons, wich are choosen by a computed  
+Icons on button - can be multiple icons, which are choosen by a computed  
 Block level buttons  
 Button groups  
 Dropdown buttons    
