@@ -9,7 +9,7 @@ Widgets
 
 
 Buttons 
--------
+--
   
 Button style - can be given
 Button size - it can be given, when making a button  
@@ -20,15 +20,15 @@ Button groups
 Dropdown buttons    
   
 Navbars
--------
+--
 
 Basic navbar  
 Fixed navbar  
   
   
 Forms
------
+--
   
-Password input field - checking if passwords are equal
+Password input field - checking if passwords are equal  
 Username input field - checking if username is free or not
   
