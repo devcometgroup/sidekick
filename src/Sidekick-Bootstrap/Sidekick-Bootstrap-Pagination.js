@@ -1,6 +1,6 @@
 define(["jquery","knockout"], function($, ko) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel){
-		return createCallback = function (idx, callback) {
+		return function (idx, callback) {
 			return function () {
 				var params = valueAccessor();
 				if (ko.isWriteableObservable(params.actualPage)) {
@@ -46,37 +46,31 @@ define(["jquery","knockout"], function($, ko) {
 		var ulElement = $("<ul/>");
 		var length = elementNumber / elementPerPage;
 		
-		var cretateCallback = createCallbackCreator(element, valueAccessor, allBindingsAccessor, viewModel);
+		var createCallback = createCallbackCreator(element, valueAccessor, allBindingsAccessor, viewModel);
 		
-		for (var i = 0; i < length; i += 1) {
-			if (i === 0 && actualPage === 0){
-				var ulActElement = $("<li class=\"disabled\"><a href=\"#\">&laquo;</a></li>"); 
-				ulElement.append(ulActElement);
-			} else if(i==0) {
-				var ulActElement = $("<li><a href=\"#\">&laquo;</a></li>");
-				ulActElement.click(createCallback(actualPage - 1,callback));
-				ulElement.append(ulActElement);
-			}
-			
-			if (i === actualPage){
-				var ulActElement = $("<li class=\"active\" > <a href=\"#\">" + (i + 1) + "</a></li>");
-				ulElement.append(ulActElement);
-			} else {
-				var ulActElement = $("<li> <a href=\"#\">" + (i + 1) + "</a></li>");
-				ulActElement.click(createCallback(i, callback));
-				ulElement.append(ulActElement);
-			}
-			
-			if (i==length-1 && actualPage === length - 1){
-				var ulActElement = $("<li class=\"disabled\"><a href=\"#\">&raquo;</a></li>");
-			
-				ulElement.append(ulActElement);
-			} else if(i==length-1) {
-				var ulActElement = $("<li><a href=\"#\">&raquo;</a></li>");	
-				ulActElement.click(createCallback(actualPage + 1,callback));
-				ulElement.append(ulActElement);
-			}
+		var ulActElement = $("<li><a href=\"#\">&laquo;</a></li>");
+		if (actualPage === 0){
+			ulActElement.addClass("disabled");
+		} else {
+			ulActElement.click(createCallback(actualPage - 1,callback));
 		}
+		ulElement.append(ulActElement);
+		for (var i = 0; i < length; i += 1) {
+			var ulActElement = $("<li> <a href=\"#\">" + (i + 1) + "</a></li>");
+			if (i === actualPage){
+				ulActElement.addClass("active");
+			} else {
+				ulActElement.click(createCallback(i, callback));
+			}
+			ulElement.append(ulActElement);
+		}
+		var ulActElement = $("<li><a href=\"#\">&raquo;</a></li>");	
+		if (actualPage === length-1){
+			ulActElement.addClass("disabled");
+		} else {
+			ulActElement.click(createCallback(actualPage + 1,callback));
+		}
+		ulElement.append(ulActElement);
 		
 		elem.empty();
 		elem.append(ulElement);
