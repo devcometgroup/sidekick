@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="stylesheet" href="./../../lib/jquery-ui-1.10.1.custom/css/ui-lightness/jquery-ui-1.10.1.custom.css" type="text/css" media="all" />
+		
+		<script src="./../../lib/require.js"></script>
+		<script>
+			requirejs.config({
+			    baseUrl: '../../',
+			    paths: {
+			        "jquery": 'lib/jquery-1.9.1',
+			        "knockout": 'lib/knockout-2.2.1.debug',
+			        "jqueryui": 'lib/jquery-ui-1.10.1.custom/js/jquery-ui-1.10.1.custom',
+			        "datepicker": "src/Sidekick-jQueryUI/sidekick-datepicker",
+			        "jquery-hu":"lib/jquery-ui-1.10.1.custom/development-bundle/ui/i18n/jquery.ui.datepicker-hu"
+			    }
+			});
+			require(["jquery","knockout","datepicker"], function($,ko,datepicker) {
+			   $(document).ready (function () {
+					ko.applyBindings ({
+						startTime: ko.observable("2013-03-08"),
+						endTime: ko.observable("2013-03-29"),
+						lang: "en",
+						minTime: "+3D",
+						maxTime: "2013-04-12"
+					});
+		
+				});
+			});
+		</script>
+		
+	</head>	
+	<body>
+	 <div data-bind="text: startTime"></div>
+	 
+	 <div data-bind="text: endTime"></div>
+			<div data-bind="datePicker: {selectedDate: startTime, endDate: endTime, currentLang: lang, minDate: minTime, maxDate: maxTime}"></div>
+			<div data-bind="datePicker: {selectedDate: endTime, startDate: startTime, currentLang: lang, minDate: minTime, maxDate: maxTime}"></div>
+	
+	</body>
+</html>
+	
