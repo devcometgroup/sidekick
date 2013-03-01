@@ -2,7 +2,12 @@ define(["jquery", "knockout"], function ($, ko) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel) {
 		return function (idx, item, callback) {
 			return function () {
-				valueAccessor().actIdx = idx;
+				var params = valueAccessor();
+				if (ko.isWriteableObservable(params.actualPage)) {
+					params.actualPage(idx);
+				} else {
+					params.actualPage = idx;
+				}
 				update(element, valueAccessor, allBindingsAccessor, viewModel);
 				callback (idx, item);
 			};
