@@ -1,7 +1,23 @@
 Sidekick
 ========
 
-Bootstrap with knockout js
+Sidekick is a binding library for Knockout.js, using Bootstrap and jQueryUI. jQueryUI is to be supported.
+
+
+Knockout - Bootstrap bindings:
+--
+
+Pagination:
+-
+
+xx
+
+Breadcrumbs:
+-
+
+xx
+
+
 
 
 Widgets
