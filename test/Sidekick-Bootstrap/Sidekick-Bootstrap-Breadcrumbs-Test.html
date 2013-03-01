@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Breadcrumbs binding test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    
+    <script src="./../../lib/require.js"></script>
+	<script>
+			requirejs.config({
+			    baseUrl:	"../../",
+			    paths: {
+			        "jquery":				"lib/jquery-1.9.1",
+			        "knockout":				"lib/knockout-2.2.1.debug",
+			        "breadcumbsBinding":	"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Breadcrumbs"
+			    }
+			});
+			require(["jquery", "knockout", "breadcumbsBinding"], function($, ko, breadcrumbsBinding) {
+			   $(document).ready (function () {
+					ko.applyBindings ({
+						breadcrumbsVM: {
+							   actIdx: 4,
+							   divider: " / ",
+							   items: ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"],
+							   
+							   hideItemsAfterActive: true,
+							   callback: function (idx, elem) {
+								   console.log ("idx:" + idx + " elem: " + elem);
+							   }
+					   },
+					   breadcrumbsVM2: {
+							   actIdx: 4,
+							   divider: " >>> ",
+							   items: ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"],
+							   
+							   hideItemsAfterActive: false,
+							   callback: function (idx, elem) {
+								   console.log ("idx:" + idx + " elem: " + elem);
+							   }
+					   }
+					});
+				});
+			});
+	</script>
+  </head>
+  <body>
+    <h1>Breadcrumbs binding test</h1>
+    
+    <div data-bind="breadcrumbs: breadcrumbsVM"></div>
+    <div data-bind="breadcrumbs: breadcrumbsVM2"></div>
+  </body>
+</html>
