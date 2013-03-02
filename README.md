@@ -29,4 +29,4 @@ Supported widgets:
 Own widgets:
 --
 * Wizard
-* Panels?
+* Panel
