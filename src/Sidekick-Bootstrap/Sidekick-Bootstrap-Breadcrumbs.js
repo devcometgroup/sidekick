@@ -1,5 +1,5 @@
 define(["jquery", "knockout"], function ($, ko) {
-	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel) {
+	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 		return function (idx, item, callback) {
 			return function () {
 				var params = valueAccessor();
@@ -14,7 +14,7 @@ define(["jquery", "knockout"], function ($, ko) {
 		};
 	};
 	
-	var update = function(element, valueAccessor, allBindingsAccessor, viewModel) {
+	var update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 		var elem = $(element);
 		elem.empty();
 		
@@ -57,7 +57,7 @@ define(["jquery", "knockout"], function ($, ko) {
 	}
 	
 	ko.bindingHandlers.breadcrumbs = {
-		init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+		init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 			var elem = $(element);
 			if (elem.is("ul")) {
 				elem.addClass("breadcrumb");

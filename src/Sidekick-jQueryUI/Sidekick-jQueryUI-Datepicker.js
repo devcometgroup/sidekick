@@ -1,6 +1,6 @@
 define(["jquery", "knockout", "jqueryui"], function($, ko){
 	ko.bindingHandlers.datePicker = {
-		init: function(element, valueAccessor, allBindingsAccessor, viewModel){
+		init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 			$(element).datepicker({
 				onSelect: function(dateText, inst) {
 					var observable = valueAccessor().selectedDate;
@@ -10,12 +10,12 @@ define(["jquery", "knockout", "jqueryui"], function($, ko){
 				}
 			});
 			
-			$(element).datepicker( "option", "dateFormat", "yy-mm-dd" );
+			$(element).datepicker("option", "dateFormat", "yy-mm-dd");
 			$.datepicker.setDefaults($.datepicker.regional['']);
 		},
-		update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+		update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 			var values = valueAccessor();
-			$(element).datepicker("setDate" ,ko.utils.unwrapObservable(values.selectedDate));
+			$(element).datepicker("setDate", ko.utils.unwrapObservable(values.selectedDate));
 			
 			if (values.minDate){
 				$(element).datepicker("option", "minDate", ko.utils.unwrapObservable(values.minDate));
@@ -42,5 +42,5 @@ define(["jquery", "knockout", "jqueryui"], function($, ko){
 				}
 			}
 		}
-	}
+	};
 });

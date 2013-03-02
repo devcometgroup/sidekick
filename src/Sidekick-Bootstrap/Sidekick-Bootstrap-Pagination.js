@@ -1,5 +1,5 @@
 define(["jquery","knockout"], function($, ko) {
-	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel){
+	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		return function (idx, callback) {
 			return function () {
 				var params = valueAccessor();
@@ -15,33 +15,49 @@ define(["jquery","knockout"], function($, ko) {
 		};
 	};
 	
-	var update = function (element, valueAccessor, allBindingsAccessor, viewModel) {
+	var alignmentClassLookupTable = {
+			"pagination-centered":	"pagination-centered",
+			"centered":				"pagination-centered",
+			"center":				"pagination-centered",
+			
+			"pagination-right":		"pagination-right",
+			"right":				"pagination-right"
+	};
+	
+	var sizeClassLookupTable = {
+			"pagination-large":	"pagination-large",
+			"large": 			"pagination-large",
+			
+			"pagination-small":	"pagination-small",
+			"small":			"pagination-small",
+			
+			"pagination-mini":	"pagination-mini",
+			"mini":				"pagination-mini"
+	};
+	
+	var addClassFromLookupTable = function (elem, key, lookup) {
+		if (typeof lookup[key] !== "undefined") {
+			elem.addClass(lookup[key]);
+		}
+	}
+	
+	
+	var update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 		var values = valueAccessor();
 		
-		var elementNumber = ko.utils.unwrapObservable(values.elementNumber);
-		var elementPerPage = ko.utils.unwrapObservable(values.elementPerPage);
-		var actualPage = ko.utils.unwrapObservable(values.actualPage);
-		var callback = values.callback;
-		var size = ko.utils.unwrapObservable(values.size);
-		var alignment =  ko.utils.unwrapObservable(values.align);
+		var elementNumber	= ko.utils.unwrapObservable(values.elementNumber);
+		var elementPerPage	= ko.utils.unwrapObservable(values.elementPerPage);
+		var actualPage		= ko.utils.unwrapObservable(values.actualPage);
+		var callback		= values.callback;
+		var size			= ko.utils.unwrapObservable(values.size);
+		var alignment		= ko.utils.unwrapObservable(values.align);
+		
 		
 		var elem = $(element);
 		
-		elem.addClass("pagination");
+		addClassFromLookupTable(elem, alignment, alignmentClassLookupTable);
+		addClassFromLookupTable(elem, size, sizeClassLookupTable);
 		
-		if (alignment === "pagination-centered" || alignment === "centered" || alignment === "center"){
-			elem.addClass("pagination-centered");
-		} else if (alignment === "pagination-right" || alignment === "right"){
-			elem.addClass("pagination-right");
-		}
-		
-		if (size === "pagination-large"|| size === "large"){
-			elem.addClass("pagination-large");
-		} else if (size === "pagination-small" || size === "small") {
-			elem.addClass("pagination-small");
-		} else if (size === "pagination-mini" || size === "mini"){
-			elem.addClass("pagination-mini");
-		}
 		
 		var ulElement = $("<ul/>");
 		var length = elementNumber / elementPerPage;
@@ -52,8 +68,9 @@ define(["jquery","knockout"], function($, ko) {
 		if (actualPage === 0){
 			ulActElement.addClass("disabled");
 		} else {
-			ulActElement.click(createCallback(actualPage - 1,callback));
+			ulActElement.click(createCallback(actualPage - 1, callback));
 		}
+		
 		ulElement.append(ulActElement);
 		for (var i = 0; i < length; i += 1) {
 			var ulActElement = $("<li> <a href=\"#\">" + (i + 1) + "</a></li>");
@@ -64,6 +81,7 @@ define(["jquery","knockout"], function($, ko) {
 			}
 			ulElement.append(ulActElement);
 		}
+		
 		var ulActElement = $("<li><a href=\"#\">&raquo;</a></li>");	
 		if (actualPage === length-1){
 			ulActElement.addClass("disabled");
@@ -77,8 +95,8 @@ define(["jquery","knockout"], function($, ko) {
 	};
 	
 	ko.bindingHandlers.pagination = {
-		init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-			
+		init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+			$(element).addClass("pagination");
 		},
 		update: update
 	};
