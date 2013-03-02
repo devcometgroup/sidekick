@@ -24,3 +24,9 @@ Knockout - jQueryUI bindings:
 --
 Supported widgets:
 * DatePicker
+
+
+Own widgets:
+--
+* Wizard
+* Panels?
