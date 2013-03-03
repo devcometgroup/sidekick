@@ -26,7 +26,7 @@ Supported widgets:
 * DatePicker
 
 
-Own widgets:
+Own to be widgets:
 --
 * Wizard
-* Panel
+* Panel?
