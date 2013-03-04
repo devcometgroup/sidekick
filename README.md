@@ -25,8 +25,11 @@ Knockout - jQueryUI bindings:
 Supported widgets:
 * DatePicker
 
+Effects on show, hide, etc...
 
-Own to be widgets:
+
+Own widgets to be supported:
 --
 * Wizard
 * Panel?
+* Tabular data widget (lightweight datagrid...)
