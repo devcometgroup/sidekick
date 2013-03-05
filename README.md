@@ -9,16 +9,19 @@ Knockout - Bootstrap bindings:
 Supported components:
 * Pagination
 * Breadcrumbs
+* Navbar
 
 Components to be supported:
 * Navs
-* Navbar
 * Dropdowns
 * Button dropdowns
 * Carousel?
 * Accordion?
 * Affix?
 * ScrollSpy?
+
+Our components based on Bootstrap:
+* MultiActionButton
 
 Knockout - jQueryUI bindings:
 --
