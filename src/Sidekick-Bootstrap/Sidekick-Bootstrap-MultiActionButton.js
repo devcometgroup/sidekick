@@ -31,7 +31,7 @@ define(["jquery", "knockout", "bootstrap"], function ($, ko, bootstrap) {
 		if (typeof lookup[key] !== "undefined") {
 			elem.addClass(lookup[key]);
 		}
-	}
+	};
 	
 	
 	ko.bindingHandlers.multiActionButton = {
@@ -85,7 +85,7 @@ define(["jquery", "knockout", "bootstrap"], function ($, ko, bootstrap) {
 					var act = items[idx];
 					var li = $("<li class=\"presentation\" />").appendTo(dropdownUl);
 					
-					var link = $("<a href=\"#\" />")					
+					var link = $("<a href=\"#\" />");		
 					link.append(act.label);
 					if (activeItem === act) {
 						link.append ($("<i class=\"icon-ok pull-right\"></i>"));
