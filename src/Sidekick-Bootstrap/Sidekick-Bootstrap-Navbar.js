@@ -1,5 +1,18 @@
 define(["jquery","knockout"], function($, ko) {
 	
+	var alignmentClassLookupTable = {
+			"pull-left":		"pull-left",
+			"left":				"pull-left",
+			
+			"pull-right":		"pull-right",
+			"right":			"pull-right"
+	};
+	
+	var addClassFromLookupTable = function (elem, key, lookup) {
+		if (typeof lookup[key] !== "undefined") {
+			elem.addClass(lookup[key]);
+		}
+	};
 	
 	var update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		var values = valueAccessor();
@@ -51,6 +64,38 @@ define(["jquery","knockout"], function($, ko) {
 		
 		innerElement.append(ulElement);
 		
+		
+		if (search){
+			var searchElement = $("<form class=\" navbar-search \">");
+			addClassFromLookupTable(searchElement, search.alignment, alignmentClassLookupTable);
+			var inputElement = $("<input type=\"text\" class=\"search-query\" placeholder="+search.placeholder+">");
+			if (search.throttle){
+				var timeout = null;
+				inputElement.keypress(function(e) {
+					
+					if (inputElement.val().length>2){
+					
+				    if (!timeout){
+				    	timeout = setTimeout(function() {
+				    		search.callback(inputElement.val());
+				    		timeout = null;
+				    	}, search.throttle);
+				    }	
+					}
+				    
+				});
+			} else {
+				inputElement.keypress(function(e) {
+				    if(e.which == 13) {
+				        search.callback(inputElement.val());
+				    }
+				});
+			}
+
+			
+			searchElement.append(inputElement);
+			innerElement.append(searchElement);
+		}
 		
 		
 		elem.append(innerElement);
