@@ -39,7 +39,7 @@ define(["jquery","knockout"], function($, ko) {
 		if (typeof lookup[key] !== "undefined") {
 			elem.addClass(lookup[key]);
 		}
-	}
+	};
 	
 	
 	var update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -64,31 +64,39 @@ define(["jquery","knockout"], function($, ko) {
 		
 		var createCallback = createCallbackCreator(element, valueAccessor, allBindingsAccessor, viewModel);
 		
-		var ulActElement = $("<li><a href=\"#\">&laquo;</a></li>");
+		var hrefActElement = $("<a href=\"#\">&laquo;</a>");
+		var liElement = $("<li />");
+		
 		if (actualPage === 0){
-			ulActElement.addClass("disabled");
+			liElement.addClass("disabled");
 		} else {
-			ulActElement.click(createCallback(actualPage - 1, callback));
+			hrefActElement.click(createCallback(actualPage - 1, callback));
 		}
+		liElement.append(hrefActElement);
+		ulElement.append(liElement);
 		
-		ulElement.append(ulActElement);
 		for (var i = 0; i < length; i += 1) {
-			var ulActElement = $("<li> <a href=\"#\">" + (i + 1) + "</a></li>");
+			
+			var hrefActElement = $( "<a href=\"#\">"+(i + 1)+"</a>");
+			var liElement = $("<li />");
 			if (i === actualPage){
-				ulActElement.addClass("active");
+				liElement.addClass("active");
 			} else {
-				ulActElement.click(createCallback(i, callback));
+				hrefActElement.click(createCallback(i, callback));
 			}
-			ulElement.append(ulActElement);
+			liElement.append(hrefActElement);
+			ulElement.append(liElement);
 		}
 		
-		var ulActElement = $("<li><a href=\"#\">&raquo;</a></li>");	
+		var hrefActElement = $("<a href=\"#\">&raquo;</a>");
+		var liElement = $("<li />");
 		if (actualPage === length-1){
-			ulActElement.addClass("disabled");
+			liElement.addClass("disabled");
 		} else {
-			ulActElement.click(createCallback(actualPage + 1,callback));
+			hrefActElement.click(createCallback(actualPage + 1,callback));
 		}
-		ulElement.append(ulActElement);
+		liElement.append(hrefActElement);
+		ulElement.append(liElement);
 		
 		elem.empty();
 		elem.append(ulElement);
