@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Navbar binding test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    
+    <script src="./../../lib/require.js"></script>
+	<script>
+			requirejs.config({
+			    baseUrl:	"../../",
+			    paths: {
+			        "jquery":				"lib/jquery-1.9.1",
+			        "knockout":				"lib/knockout-2.2.1.debug",
+			        "navbar":				"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Navbar"
+			    }
+			});
+			require(["jquery", "knockout", "navbar"], function($, ko, navbar) {
+			   $(document).ready (function () {
+					ko.applyBindings ({
+						navbarVM: {
+							title: {name: "Title"},
+							links: [{name:"href",href:"http://index.hu"},
+							        {name:"callback",callback: function(){alert("Callback");}}, 
+									{name:"callback+href",callback:function(){alert("Callback")},href:"#noCallback"},
+									{name:"noaction",icon:"icon-lock"},
+									{icon:"icon-star",href:"#something"}]
+							        
+						
+					   }
+					});
+				});
+			});
+	</script>
+  </head>
+  <body>
+    <h1>Navbar binding test</h1>
+    
+    <div data-bind="navbar: navbarVM"></div>
+  </body>
+</html>

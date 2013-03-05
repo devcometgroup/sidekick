@@ -54,7 +54,7 @@ define(["jquery", "knockout"], function ($, ko) {
 			}
 			liElem.appendTo(ul);
 		}
-	}
+	};
 	
 	ko.bindingHandlers.breadcrumbs = {
 		init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {

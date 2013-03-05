@@ -39,7 +39,7 @@ define(["jquery","knockout"], function($, ko) {
 		if (typeof lookup[key] !== "undefined") {
 			elem.addClass(lookup[key]);
 		}
-	}
+	};
 	
 	
 	var update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
