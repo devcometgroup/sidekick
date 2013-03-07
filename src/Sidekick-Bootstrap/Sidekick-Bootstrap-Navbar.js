@@ -8,6 +8,17 @@ define(["jquery","knockout"], function($, ko) {
 			"right":			"pull-right"
 	};
 	
+	var displayClassLookupTable = {
+			"navbar-fixed-top":		"navbar-fixed-top",
+			"fixed-top":			"navbar-fixed-top",
+			
+			"navbar-fixed-bottom":	"navbar-fixed-bottom",
+			"fixed-bottom":			"navbar-fixed-bottom",
+			
+			"navbar-static-top":	"navbar-static-top",
+			"static-top":			"navbar-static-top"
+	};
+	
 	var addClassFromLookupTable = function (elem, key, lookup) {
 		if (typeof lookup[key] !== "undefined") {
 			elem.addClass(lookup[key]);
@@ -108,7 +119,10 @@ define(["jquery","knockout"], function($, ko) {
 	ko.bindingHandlers.navbar = {
 			init:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 				var elem = $(element);
+				var values = valueAccessor();
 				elem.addClass("navbar");
+				addClassFromLookupTable(elem,values.display , displayClassLookupTable);
+				
 			},
 			update: update
 	};
