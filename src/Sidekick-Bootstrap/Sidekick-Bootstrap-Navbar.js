@@ -53,21 +53,27 @@ define(["jquery","knockout"], function($, ko) {
 		
 		var length = links.length;
 		
-		for (var i=0; i<length; i+=1){
-			if (!links[i].name){
-				links[i].name="";
+		for (var i=0; i<length; i+=1) {
+			var act = links[i];
+			
+			var hrefActElement = "<a href=\"#\" />";
+			
+			if (act.name) {
+				hrefActElement.text(act.name);
 			}
-			if (links[i].href){
-				var hrefActElement = $( "<a href="+links[i].href+">"+links[i].name+"</a>");
-			} else if (links[i].callback) {
-				var hrefActElement = $( "<a href=\"#\">"+links[i].name+"</a>");
-				hrefActElement.click(links[i].callback);
-			} else {
-				var hrefActElement = $( "<a href=\"#\">"+links[i].name+"</a>");
+			
+			if (act.href) {
+				hrefActElement.attr("href", act.href);
 			}
-			if (links[i].icon){
+			
+			if (act.callback) {
+				hrefActElement.click(act.callback);
+			}
+			
+			if (act.icon) {
 				hrefActElement.prepend("<i class="+links[i].icon+"></i>");
 			}
+			
 			var liElement = $("<li />");
 			liElement.append(hrefActElement);
 			ulElement.append(liElement);
@@ -110,10 +116,6 @@ define(["jquery","knockout"], function($, ko) {
 		
 		
 		elem.append(innerElement);
-		
-		
-		
-		
 	};
 	
 	ko.bindingHandlers.navbar = {
