@@ -1,4 +1,4 @@
-define(["jquery","knockout"], function($, ko) {
+define(["jquery","ko"], function($, ko) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		return function (idx, callback) {
 			return function () {

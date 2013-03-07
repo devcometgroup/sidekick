@@ -1,4 +1,4 @@
-define(["jquery", "knockout", "bootstrap"], function ($, ko, bootstrap) {
+define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 	var styleClassLookupTable = {
 			"btn-primary":	"btn-primary",
 			"primary":		"btn-primary",

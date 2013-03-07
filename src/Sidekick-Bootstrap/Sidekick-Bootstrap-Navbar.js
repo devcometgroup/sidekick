@@ -1,4 +1,4 @@
-define(["jquery","knockout"], function($, ko) {
+define(["jquery","ko"], function($, ko) {
 	
 	var alignmentClassLookupTable = {
 			"pull-left":		"pull-left",

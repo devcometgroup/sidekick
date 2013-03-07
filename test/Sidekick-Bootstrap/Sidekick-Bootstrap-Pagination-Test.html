@@ -11,25 +11,26 @@
 			requirejs.config({
 			    baseUrl: '../../',
 			    paths: {
-			        "jquery": 'lib/jquery-1.9.1',
-			        "knockout": 'lib/knockout-2.2.1.debug',
-			        "pagination": "src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
+			        "jquery": 		"lib/jquery-1.9.1",
+			        "ko": 			"lib/knockout-2.2.1.debug",
+			        "pagination": 	"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
 			       
 			    }
 			});
-			require(["jquery","knockout","pagination"], function($,ko,pagination) {
+			require(["jquery","ko","pagination"], function($,ko,pagination) {
 			   $(document).ready (function () {
-					ko.applyBindings ({
-						actPage: ko.observable(1),
-						elemNum: 100,
-						elemPP: 10,
-						callb: function(i){
+					ko.applyBindings (
+						{paginationVM:{
+						actualPage: ko.observable(1),
+						elementNumber: 100,
+						elementPerPage: 10,
+						callback: function(i){
 							alert(i+1)
 						},
 						size: "large",
 						align: "center"
 						
-					});
+					}});
 		
 				});
 			});
@@ -37,7 +38,7 @@
 		
 	</head>	
 	<body>
-			<div data-bind="pagination: {elementNumber: elemNum, elementPerPage: elemPP, actualPage: actPage, callback: callb, size: size, align: align}"></div>
+			<div data-bind="pagination:paginationVM"></div>
 		
 	</body>
 </html>
