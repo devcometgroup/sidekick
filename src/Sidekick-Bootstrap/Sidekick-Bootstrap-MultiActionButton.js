@@ -42,11 +42,22 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 		update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 			var values = valueAccessor();
 			var items = ko.utils.unwrapObservable(values.items);
+			var activeItem = ko.observable(null);
 			
 			if (typeof values.activeItem === "undefined") {
-				var activeItem = values.activeItem = items[0];
+				activeItem = values.activeItem = ko.observable(items[0]);
 			} else {
-				var activeItem = values.activeItem;
+				if(ko.isObservable(values.activeItem)){
+					var tempActItem = values.activeItem();
+					if(typeof tempActItem === "undefined" || tempActItem === null){
+						values.activeItem(items[0]);
+						activeItem(values.activeItem());
+					} else {
+						activeItem(tempActItem);
+					}
+				} else {
+					activeItem = values.activeItem;
+				}
 			}
 			
 			var activeItem = ko.utils.unwrapObservable(activeItem);
@@ -99,7 +110,11 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 								values.activeItem = item;
 							}
 							
-							activeItem = item;
+							if(ko.isWriteableObservable(activeItem)) {
+								activeItem(item);
+							} else {
+								activeItem = item;
+							}
 							
 							dropdownUl.empty();
 							addItemsToDropdown();

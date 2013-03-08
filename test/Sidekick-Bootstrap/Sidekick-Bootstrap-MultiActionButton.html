@@ -21,11 +21,11 @@
 			    		deps: ["jquery"]
 			    	},
 			    	"multiActionButton": {
-			    		deps: ["jquery", "knockout", "bootstrap"]
+			    		deps: ["jquery", "ko", "bootstrap"]
 			    	}
 			    }
 			});
-			require(["jquery", "knockout", "multiActionButton"], function($, ko, multiActionButton) {
+			require(["jquery", "ko", "multiActionButton"], function($, ko, multiActionButton) {
 			   $(document).ready (function () {
 					ko.applyBindings ({
 						multiActBtn: {
@@ -48,7 +48,8 @@
 							},
 							size: "large",
 							style: "danger"
-						}
+						},
+						activeItem: ko.observable(null)
 					});
 				});
 			});
@@ -58,5 +59,16 @@
     <h1>MultiActionButton binding test</h1>
     
     <div data-bind="multiActionButton: multiActBtn"></div>
+    <div data-bind="with: multiActBtn.activeItem">
+    	<h3>Selected Item:</h3>
+    	<div class="form-inline">
+    		<spam>selected id:</spam>
+    		<spam data-bind="text: id"></spam>
+    	</div>
+    	<div class="form-inline">
+    		<spam>selected label:</spam>
+    		<spam data-bind="text: label"></spam>
+    	</div>	
+    </div>
   </body>
 </html>
