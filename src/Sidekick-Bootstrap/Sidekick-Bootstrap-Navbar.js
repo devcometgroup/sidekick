@@ -1,14 +1,13 @@
-define(["jquery","ko"], function($, ko) {
-	
-	var alignmentClassLookupTable = {
+define(["jquery","ko", "../common/AddClassLookupMonad"], function($, ko, addClassLookup) {
+	var addAlignmentClass = addClassLookup ({
 			"pull-left":		"pull-left",
 			"left":				"pull-left",
 			
 			"pull-right":		"pull-right",
 			"right":			"pull-right"
-	};
+	});
 	
-	var displayClassLookupTable = {
+	var addDisplayClass = addClassLookup ({
 			"navbar-fixed-top":		"navbar-fixed-top",
 			"fixed-top":			"navbar-fixed-top",
 			
@@ -17,13 +16,7 @@ define(["jquery","ko"], function($, ko) {
 			
 			"navbar-static-top":	"navbar-static-top",
 			"static-top":			"navbar-static-top"
-	};
-	
-	var addClassFromLookupTable = function (elem, key, lookup) {
-		if (typeof lookup[key] !== "undefined") {
-			elem.addClass(lookup[key]);
-		}
-	};
+	});
 	
 	var update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		var values = valueAccessor();
@@ -31,20 +24,19 @@ define(["jquery","ko"], function($, ko) {
 		var title = ko.utils.unwrapObservable(values.title);
 		var search = ko.utils.unwrapObservable(values.search);
 		
-		var elem=$(element);
+		var elem = $(element);
 		
 		var innerElement = $("<div class=\"navbar-inner\" />");
 		
 	
 		
-		if (title){
-			if (!title.name){
-				title.name="";
+		if (title) {
+			var titleElement = $("<a class=\"brand\" href=\"#\" />");
+			if (title.name) {
+				titleElement.text(title.name);
 			}
 			if (title.href) {
-				var titleElement = $("<a class=\"brand\" href="+title.href+">"+title.name+"</a>"); 
-			} else {
-				var titleElement = $("<a class=\"brand\" href=\"#\" >"+title.name+"</a>");
+				titleElement.attr("href", title.href);
 			}
 			innerElement.append(titleElement);
 		}
@@ -52,8 +44,7 @@ define(["jquery","ko"], function($, ko) {
 		var ulElement = $("<ul class=\"nav\" />");
 		
 		var length = links.length;
-		
-		for (var i=0; i<length; i+=1) {
+		for (var i=0; i < length; i+=1) {
 			var act = links[i];
 			
 			var hrefActElement = "<a href=\"#\" />";
@@ -83,9 +74,9 @@ define(["jquery","ko"], function($, ko) {
 		
 		
 		if (search){
-			var searchElement = $("<form class=\" navbar-search \">");
-			addClassFromLookupTable(searchElement, search.alignment, alignmentClassLookupTable);
-			var inputElement = $("<input type=\"text\" class=\"search-query\" placeholder="+search.placeholder+">");
+			var searchElement = $("<form class=\"navbar-search\" />");
+			addAlignmentClass(searchElement)(search.alignment);
+			var inputElement = $("<input type=\"text\" class=\"search-query\" placeholder=" + search.placeholder + " />");
 			if (search.throttle){
 				var timeout = null;
 				inputElement.keypress(function(e) {
@@ -113,8 +104,6 @@ define(["jquery","ko"], function($, ko) {
 			searchElement.append(inputElement);
 			innerElement.append(searchElement);
 		}
-		
-		
 		elem.append(innerElement);
 	};
 	
@@ -123,8 +112,7 @@ define(["jquery","ko"], function($, ko) {
 				var elem = $(element);
 				var values = valueAccessor();
 				elem.addClass("navbar");
-				addClassFromLookupTable(elem,values.display , displayClassLookupTable);
-				
+				addDisplayClass(elem)(values.display);
 			},
 			update: update
 	};

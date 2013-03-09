@@ -1,5 +1,5 @@
-define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
-	var styleClassLookupTable = {
+define(["jquery", "ko", "bootstrap", "../common/AddClassLookupMonad"], function ($, ko, bootstrap, addClassLookupMonad) {
+	var addStyleClass = addClassLookupMonad ({
 			"btn-primary":	"btn-primary",
 			"primary":		"btn-primary",
 			"btn-info":		"btn-info",
@@ -14,9 +14,9 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 			"inverse":		"btn-inverse",
 			"btn-link":		"btn-link",
 			"link":			"btn-link"
-	};
+	});
 	
-	var sizeClassLookupTable = {
+	var addSizeClass = addClassLookupMonad ({
 			"btn-large":	"btn-large",
 			"large": 		"btn-large",
 			
@@ -25,13 +25,7 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 			
 			"btn-mini":		"btn-mini",
 			"mini":			"btn-mini"
-	};
-	
-	var addClassFromLookupTable = function (elem, key, lookup) {
-		if (typeof lookup[key] !== "undefined") {
-			elem.addClass(lookup[key]);
-		}
-	};
+	});
 	
 	
 	ko.bindingHandlers.multiActionButton = {
@@ -68,10 +62,10 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 			elem.empty();
 			
 			
-			var actionBtn = $("<button class=\"btn\"></button>");
+			var actionBtn = $("<button class=\"btn\" />");
 			
-			addClassFromLookupTable(actionBtn, values.style, styleClassLookupTable);
-			addClassFromLookupTable(actionBtn, values.size, sizeClassLookupTable);
+			addStyleClass(actionBtn)(values.style);
+			addSizeClass(actionBtn)(valueAccessor.size);
 			
 			actionBtn.text(activeItem.label);
 			actionBtn.click(function () {
@@ -83,8 +77,8 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 			var caretBtn = $("<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\" />")
 				.append($("<span class=\"caret\"></span>"));
 			
-			addClassFromLookupTable(caretBtn, values.style, styleClassLookupTable);
-			addClassFromLookupTable(caretBtn, values.size, sizeClassLookupTable);
+			addStyleClass(caretBtn)(values.style);
+			addSizeClass(caretBtn)(values.size);
 			
 			caretBtn.dropdown();
 			
@@ -123,8 +117,6 @@ define(["jquery", "ko", "bootstrap"], function ($, ko, bootstrap) {
 				}
 			}
 			addItemsToDropdown();
-			
-			
 			
 			elem.append(actionBtn)
 				.append(caretBtn)

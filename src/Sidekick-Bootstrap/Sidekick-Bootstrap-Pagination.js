@@ -1,4 +1,4 @@
-define(["jquery","ko"], function($, ko) {
+define(["jquery", "ko", "../common/AddClassLookupMonad"], function($, ko, addClassLookupMonad) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		return function (idx, callback) {
 			return function () {
@@ -15,16 +15,16 @@ define(["jquery","ko"], function($, ko) {
 		};
 	};
 	
-	var alignmentClassLookupTable = {
+	var addAlignmentClass = addClassLookupMonad ({
 			"pagination-centered":	"pagination-centered",
 			"centered":				"pagination-centered",
 			"center":				"pagination-centered",
 			
 			"pagination-right":		"pagination-right",
 			"right":				"pagination-right"
-	};
+	});
 	
-	var sizeClassLookupTable = {
+	var addSizeClass = addClassLookupMonad ({
 			"pagination-large":	"pagination-large",
 			"large": 			"pagination-large",
 			
@@ -33,13 +33,7 @@ define(["jquery","ko"], function($, ko) {
 			
 			"pagination-mini":	"pagination-mini",
 			"mini":				"pagination-mini"
-	};
-	
-	var addClassFromLookupTable = function (elem, key, lookup) {
-		if (typeof lookup[key] !== "undefined") {
-			elem.addClass(lookup[key]);
-		}
-	};
+	});
 	
 	
 	var update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -55,8 +49,8 @@ define(["jquery","ko"], function($, ko) {
 		
 		var elem = $(element);
 		
-		addClassFromLookupTable(elem, alignment, alignmentClassLookupTable);
-		addClassFromLookupTable(elem, size, sizeClassLookupTable);
+		addAlignmentClass(elem)(alignment);
+		addSizeClass(elem)(size);
 		
 		
 		var ulElement = $("<ul/>");
@@ -76,14 +70,14 @@ define(["jquery","ko"], function($, ko) {
 		ulElement.append(liElement);
 		
 		for (var i = 0; i < length; i += 1) {
-			
-			var hrefActElement = $( "<a href=\"#\">"+(i + 1)+"</a>");
+			var hrefActElement = $( "<a href=\"#\">" + (i + 1) + "</a>");
 			var liElement = $("<li />");
 			if (i === actualPage){
 				liElement.addClass("active");
 			} else {
 				hrefActElement.click(createCallback(i, callback));
 			}
+			
 			liElement.append(hrefActElement);
 			ulElement.append(liElement);
 		}
