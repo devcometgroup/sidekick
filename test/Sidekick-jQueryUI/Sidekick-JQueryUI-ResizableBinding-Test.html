@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Resizable binding test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+     <link href="./../../lib/jquery-ui-1.10.1.custom/css/ui-lightness/jquery-ui-1.10.1.custom.css" rel="stylesheet" media="screen">
+    
+    <script src="./../../lib/require.js"></script>
+	<script>
+			requirejs.config({
+			    baseUrl:	"../../",
+			    paths: {
+			        "jquery":				"lib/jquery-1.9.1",
+			        "ko":					"lib/knockout-2.2.1.debug",
+			        "jqueryui":				"lib/jquery-ui-1.10.1.custom/js/jquery-ui-1.10.1.custom",
+			        "resizable":			"src/Sidekick-jQueryUI/Sidekick-jQueryUI-ResizableBinding"
+			    },
+			    shim: {
+			    	"jqueryui": {
+			    		deps: ["jquery"]
+			    	},
+			    	"resizable": {
+			    		deps: ["jquery", "ko", "jqueryui"]
+			    	}
+			    }
+			});
+			require(["jquery", "ko", "resizable"], function($, ko, resizable) {
+			   $(document).ready (function () {
+				   var obj = {
+							actType: ko.observable("normal"),
+							actX: ko.observable(20),
+							actY: ko.observable(10),
+							normal: {},
+							animate: {
+								animate: true,  
+								animateDuration: "slow",//You can define it with Number (millisecond) or String ("fast" or "slow"). Default value: "slow". 
+							},
+							animateAndHelper: {
+								animate: true,  
+								animateDuration: "slow", 
+								helper: "ui-selectable-helper"
+							},
+							aspectRatio: {
+								aspectRatio: ko.observable(true) //if true: the element will maintain its original aspect ratio, if number: Force the element to maintain a specific aspect ratio during resizing
+							},
+							autoHide: {
+								autoHide: true
+							},
+							containment: {
+								containment: "parent" 
+							},
+							delay: {
+								delay: ko.observable(350) //milliseconds
+							},
+							distance: {
+								distance: ko.observable(100) //pixel
+							},
+							grid: {
+								grid: [20,10] // Array: [x,y] (pixels)
+							},
+							handles: {
+								handles: "n, e, s, w, sw" //string,  (usable keys: n, e, s, w, ne, se, sw, nw, all.);
+							},
+							helper: {
+								helper: "ui-selectable-helper" //css class 
+							},
+							minimax: {
+								maxHeight: ko.observable(600),
+								maxWidth: ko.observable(800),
+								minHeight: ko.observable(10),
+								minWidth: ko.observable(10)
+							}
+					};
+				   
+				    obj.resizableParameters = ko.computed(function() {
+							return obj[obj.actType()];
+					});
+				    
+				   // obj.gridArray =  
+				    obj.grid.grid = ko.computed(function() {
+				    	var array = [];
+				    	array.push(obj.actX());
+				    	array.push(obj.actY());
+				    	return array;
+				    });
+				    
+				    obj.handlesArray = [];
+				    var tmp = ["e","n","w","s","ne","nw","se","sw"];
+					for(var i = 0; i < 8; i += 1){
+						obj.handlesArray.push({
+								need: ko.observable(true),
+								value: tmp[i]
+							});
+					}
+				   	
+				    obj.handles.handles = ko.computed(function() {
+				    	var isFirst = true;
+				    	var str = "";
+				    	for(var i = 0; i < 8; i += 1){
+				    		if(obj.handlesArray[i].need()){
+				    			if(!isFirst)
+				    				str += ", ";
+				    			else
+				    				isFirst = false;
+				    			str += obj.handlesArray[i].value;
+				    		}
+				    	}
+				    	return str;
+				    });
+				    
+					ko.applyBindings (obj);
+				});	
+			});
+	</script>
+</head>
+<body>
+	<div>
+	   	<h1 >Resizable binding test</h1>
+		<select data-bind="value: actType" style="margin: 20px;">
+			<option value="normal">default</option>
+			<option value="animate">animated</option>
+			<option value="animateAndHelper">animated with helper (suggested)</option>
+			<option value="aspectRatio">Preserve Aspect Ratio</option>
+			<option value="autoHide">Hide</option>
+			<option value="delay">Delay</option>
+			<option value="distance">Distance</option>
+			<option value="grid">Grid</option>
+			<option value="handles">Handles</option>
+			<option value="helper">helper</option>
+			<option value="minimax">min and max</option>
+		</select>
+		<!-- ko if: actType() === "minimax" -->
+			<div style="display: inline-block;"><p>min width:</p><input type="number" min="10" data-bind="value: minimax.minWidth"/></div>
+			<div style="display: inline-block;"><p>min height:</p><input type="number" min="10" data-bind="value: minimax.minHeight"/></div>
+			<div style="display: inline-block;"><p>max width:</p><input type="number" min="10" data-bind="value: minimax.maxWidth"/></div>
+			<div style="display: inline-block;"><p>max height:</p><input type="number" min="10" data-bind="value: minimax.maxHeight"/></div>
+		<!-- /ko -->
+		<!-- ko if: actType() === "delay" -->
+			<div style="display: inline-block;"><p>Time (milliseconds):</p><input type="number" min="0" data-bind="value: delay.delay"/></div>
+		<!-- /ko -->
+		<!-- ko if: actType() === "distance" -->
+			<div style="display: inline-block;"><p>Distance (pixel):</p><input type="number" min="0" data-bind="value: distance.distance"/></div>
+		<!-- /ko -->
+		<!-- ko if: actType() === "grid" -->
+			<div style="display: inline-block;">X:  <input type="number" min="1" data-bind="value: actX"/></div>
+			<div style="display: inline-block;">Y:  <input type="number" min="1" data-bind="value: actY"/></div>
+		<!-- /ko -->
+		<!-- ko if: actType() === "handles" -->
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox1" data-bind="checked: handlesArray[0].need"> e</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox2" data-bind="checked: handlesArray[1].need"> n</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[2].need"> w</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[3].need"> s</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[4].need"> ne</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[5].need"> nw</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[6].need"> se</label>
+			<label class="checkbox inline"><input type="checkbox" id="inlineCheckbox3" data-bind="checked: handlesArray[7].need"> sw</label>
+		<!-- /ko -->
+	</div>
+	<div style="padding: 20px;">
+		<img src="http://devcometgroup.com/img/DCGLogo_320.png" data-bind="resizable: resizableParameters" style="border:1px solid black; overflow: hidden;"></img>
+	</div>	
+</body>
+</html>

@@ -1,4 +1,4 @@
-define(["jquery", "ko", "bootstrap", "addClassMonad"], function ($, ko, bootstrap, addClassLookupMonad) {
+define(["jquery", "ko", "bootstrap", "SidekickCommon/AddClassLookupMonad"], function ($, ko, bootstrap, addClassLookupMonad) {
 	var addStyleClass = addClassLookupMonad ({
 			"btn-primary":	"btn-primary",
 			"primary":		"btn-primary",
@@ -65,7 +65,7 @@ define(["jquery", "ko", "bootstrap", "addClassMonad"], function ($, ko, bootstra
 			var actionBtn = $("<button class=\"btn\" />");
 			
 			addStyleClass(actionBtn)(values.style);
-			addSizeClass(actionBtn)(valueAccessor.size);
+			addSizeClass(actionBtn)(values.size);
 			
 			actionBtn.text(activeItem.label);
 			actionBtn.click(function () {

@@ -11,10 +11,10 @@
 			requirejs.config({
 			    baseUrl: '../../',
 			    paths: {
-			        "jquery": 		"lib/jquery-1.9.1",
-			        "ko": 			"lib/knockout-2.2.1.debug",
-			        "pagination": 	"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
-			       	"addClassMonad":"src/common/AddClassLookupMonad"
+			        "jquery": 			"lib/jquery-1.9.1",
+			        "ko": 				"lib/knockout-2.2.1.debug",
+			        "SidekickCommon":	"src/common",
+			        "pagination": 		"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
 			    }
 			});
 			require(["jquery","ko","pagination"], function($,ko,pagination) {
