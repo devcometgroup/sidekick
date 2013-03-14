@@ -107,6 +107,76 @@
 								}
 								
 							}
+					   },
+					   datagridVM2: {
+							
+							
+							dataSource:{
+								read:function(itemPerPage,actualPage,callback,field,ascDesc){
+									var items = [
+								        {name: "Alfa",age:26,course:"math"},
+								        {name: "Wolfram",age:24,course:"programing"},
+								        {name: "Beta",age:24,course:"gaming"},
+								        {name: "Zed",age:24,course:"graphics"},
+								        {name: "John",age:24,course:"literature"},
+								        {name: "Del",age:24,course:"modern arts"},
+								        {name: "Control",age:24,course:"arts"},
+								        {name: "Fred",age:22,course:"writing"}];
+									
+									if (itemPerPage*actualPage>=items.length){
+										actualPage=0;
+									}
+									
+									if (ascDesc!=="none"){
+										items.sort(function(a,b){
+											if (ascDesc==="asc"){
+												return a[field]>b[field];
+											} else {
+												return a[field]<b[field];
+											}
+										});	
+									}
+										
+									if (itemPerPage!=="all"){
+										var retItem=[];
+										for (var i=0; i<itemPerPage; i=i+1){
+											if (actualPage*itemPerPage+i<items.length){
+												retItem.push(items[actualPage*itemPerPage+i]);	
+											}
+										}
+										
+									} else {
+										var retItem=items;
+									}
+										
+										
+									callback(retItem);
+									//alert("Ordering By: "+field+" Asc or Desc: "+ascDesc);
+									
+								}
+								
+							},
+							options:{
+								pagination: {
+									actualPage: ko.observable(0),
+									elementNumber: 8,
+									elementPerPage: ko.observable(2),							
+									callback: function(i){
+									
+									},
+									size: "small",
+									align: "center",								
+									
+								},
+								orderings:{
+									byName:{
+										field: "name",
+										ascDesc:ko.observable("asc"),
+										label: "Full Name"
+									}
+								}
+								
+							}
 					   }
 					});
 				});
@@ -115,18 +185,41 @@
   </head>
   <body>
     <h1>Datagrid binding test</h1>
+    
+    <h4>Fully orderable, and the item per page can be changed</h4>
     <div class="pull-right"> <select data-bind="options: datagridVM.options.pagination.selector, optionsText: 'label',optionsValue: 'value', value:  datagridVM.options.pagination.selectorValue"></select></div>
-    <table data-bind="customizableDatagrid: datagridVM" class="table table-bordered">
-    	<thead><tr><th data-bind="orderController: options.orderings.byName"></th>
-    	<th data-bind="orderController: options.orderings.byCourse"></th>
-    	<th data-bind="orderController: options.orderings.byAge"></th></thead>
-    	<tbody>
-    		<tr>
-    			<td data-bind="text: name"></td>
-    			<td data-bind="text: course"></td>
-    			<td data-bind="text: age"></td>
-    		</tr>
-    	</tbody>
-    </table>
+  	
+  
+    <div>
+	    <table data-bind="customizableDatagrid: datagridVM" class="table table-bordered">
+	    	<thead><tr><th data-bind="orderController: options.orderings.byName"></th>
+	    	<th data-bind="orderController: options.orderings.byCourse"></th>
+	    	<th data-bind="orderController: options.orderings.byAge"></th></thead>
+	    	<tbody>
+	    		<tr>
+	    			<td data-bind="text: name"></td>
+	    			<td data-bind="text: course"></td>
+	    			<td data-bind="text: age"></td>
+	    		</tr>
+	    	</tbody>
+	    </table>
+	</div>
+	
+    <h4>Ordelable only by name, and always two items appears on a page</h4>
+   <div>
+	   <table data-bind="customizableDatagrid: datagridVM2" class="table table-bordered">
+	    	<thead><tr><th data-bind="orderController: options.orderings.byName"></th>
+	    	<th>Course</th>
+	    	<th>Age</th></thead>
+	    	<tbody>
+	    		<tr>
+	    			<td data-bind="text: name"></td>
+	    			<td data-bind="text: course"></td>
+	    			<td data-bind="text: age"></td>
+	    		</tr>
+	    	</tbody>
+	    </table>
+    </div>
+	
   </body>
 </html>

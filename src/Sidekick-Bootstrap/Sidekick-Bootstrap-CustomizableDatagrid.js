@@ -1,4 +1,8 @@
+//TODO: the table binding must be put into a separate <div>, or it won't allow bindings after itself
 define(["jquery", "ko"], function($, ko) {
+	var templates = [];
+	
+	var nextAvailableId = 0;
 	
 	
 	var update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
@@ -12,9 +16,11 @@ define(["jquery", "ko"], function($, ko) {
 		
 		var elem = $(element);
 		
-		var header = viewModel.__header__;
-		var content = viewModel.__content__;
+		var actId = parseInt ($(element).attr("__templateId__"));
 		
+		var header = templates[actId].__header__;
+		var content =  templates[actId].__content__;
+		var footer =  templates[actId].__footer__;
 	
 		
 		elem.empty();
@@ -51,6 +57,7 @@ define(["jquery", "ko"], function($, ko) {
 		
 		elem.append(tbody);
 		
+		elem.append(footer);
 		values.items=items;
 		values.callback = function(orderBy,ascDesc){
 			orderingKeys = Object.keys(orderings);
@@ -65,23 +72,32 @@ define(["jquery", "ko"], function($, ko) {
 		
 		var innerBindingContext = bindingContext.extend(values);
 		ko.applyBindingsToDescendants(innerBindingContext, element);
+		
 	};
 	
 
 	ko.bindingHandlers.customizableDatagrid = {
 			init:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
+				var temp={};
+				
 				if ($(element).find('thead')[0]) {
 					var header = $(element).find('thead')[0].outerHTML;
-					viewModel.__header__ = header;
+					temp.__header__ = header;
 				}
 				if ($(element).find('tbody')[0]) {
 					var content = $(element).find('tbody')[0].innerHTML;					
-					viewModel.__content__ = content;
+					temp.__content__ = content;
 				}
 				if ($(element).find('tfoot')[0]){
-					var tfoot = $(element).find('tfoot')[0].innerHTML;					
-					viewModel.__footer__ = footer;
+					var footer = $(element).find('tfoot')[0].innerHTML;					
+					temp.__footer__ = footer;
 				}
+				
+				templates[nextAvailableId]=temp;
+				$(element).attr("__templateId__", nextAvailableId);
+
+				nextAvailableId+=1;
+				
 				
 				var neighboursElements = element.parentNode.childNodes;
 				
