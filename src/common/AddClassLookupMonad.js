@@ -3,7 +3,7 @@ define([], function () {
 		return function (jQueryElem) {
 			return function (key) {
 				if (typeof obj[key] === "string") {
-					jQueryElem.addClass(lookup[key]);
+					jQueryElem.addClass(obj[key]);
 				}
 			};
 		};

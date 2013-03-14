@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dropdown binding test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    
+    <script src="./../../lib/require.js"></script>
+	<script>
+			requirejs.config({
+			    baseUrl:	"../../",
+			    paths: {
+			        "jquery":			"lib/jquery-1.9.1",
+			        "ko":				"lib/knockout-2.2.1.debug",
+			        "bootstrap":		"lib/bootstrap/js/bootstrap",
+			        "SidekickCommon":	"src/common",
+			        "dropdownMenu":		"src/Sidekick-Bootstrap/Sidekick-Bootstrap-DropdownBindings"
+			    },
+			    shim: {
+			    	"bootstrap": {
+			    		deps: ["jquery"]
+			    	},
+			    	"dropdownMenu": {
+			    		deps: ["jquery", "ko", "bootstrap"]
+			    	}
+			    }
+			});
+			require(["jquery", "ko", "dropdownMenu"], function($, ko) {
+			   $(document).ready (function () {
+					ko.applyBindings ({
+						dropdown: {
+							label: "dropdown test",
+							items: [
+						           {
+						        	   label: "item1",
+						        	   disabled: true
+						           },
+						           {
+						        	   label: "index.hu",
+						        	   href: "http://index.hu"
+						           },
+						           {
+						        	   label: "item3",
+						        	   callback: function () {
+						        		   console.log ("item3 callback");
+						        	   }
+						           },
+						           {
+						        	   separator: true
+						           },
+						           {
+						        	   label: "submenu!!",
+						        	   items: [
+												{
+													   label: "item12",
+													   disabled: true
+												},
+												{
+													   label: "index.hu",
+													   href: "http://index.hu"
+												},
+												{
+													   label: "item32",
+													   callback: function () {
+														   console.log ("item3 callback");
+													   }
+												},
+												{
+										        	   label: "submenu!!",
+										        	   items: [
+																{
+																	   label: "item12",
+																	   disabled: true
+																},
+																{
+																	   label: "index.hu",
+																	   href: "http://index.hu"
+																},
+																{
+																	   label: "item32",
+																	   callback: function () {
+																		   console.log ("item3 callback");
+																	   }
+																}
+										        	           ]
+										           }
+						        	           ]
+						           }
+						           ]
+						},
+						dropdown2: {
+							label: "dropdown test2",
+							items: [
+						           {
+						        	   label: "item12",
+						        	   disabled: true
+						           },
+						           {
+						        	   label: "index.hu",
+						        	   href: "http://index.hu"
+						           },
+						           {
+						        	   label: "item32",
+						        	   callback: function () {
+						        		   console.log ("item3 callback");
+						        	   }
+						           },
+						           {
+						        	   separator: true
+						           },
+						           {
+						        	   label: "item32",
+						        	   callback: function () {
+						        		   console.log ("item3 callback");
+						        	   }
+						           }
+						           ],
+							options: {
+								size: "large",
+								style: "success",
+								dropup: false
+							}
+						}
+					});
+				});
+			});
+	</script>
+  </head>
+  <body>
+    <h1>Dropdown binding test</h1>
+	<div data-bind="dropdown: dropdown"></div>
+	<div data-bind="buttonDropdown: dropdown2"></div>
+  </body>
+</html>

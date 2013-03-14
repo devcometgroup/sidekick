@@ -1,4 +1,4 @@
-define(["jquery", "ko", "../common/AddClassLookupMonad"], function($, ko, addClassLookupMonad) {
+define(["jquery", "ko", "SidekickCommon/AddClassLookupMonad"], function($, ko, addClassLookupMonad) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		return function (idx, callback) {
 			return function () {
