@@ -46,7 +46,7 @@ define(["jquery", "ko", "SidekickCommon/AddClassLookupMonad"], function($, ko, a
 		var size			= ko.utils.unwrapObservable(values.size);
 		var alignment		= ko.utils.unwrapObservable(values.align);
 		
-		
+
 		var elem = $(element);
 		
 		addAlignmentClass(elem)(alignment);
