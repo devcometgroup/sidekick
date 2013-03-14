@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Datagrid binding test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    
+    <script src="./../../lib/require.js"></script>
+	<script>
+			requirejs.config({
+			    baseUrl:	"../../",
+			    paths: {
+			        "jquery":				"lib/jquery-1.9.1",
+			        "ko":					"lib/knockout-2.2.1.debug",
+			        "customizableDatagrid":"src/Sidekick-Bootstrap/Sidekick-Bootstrap-CustomizableDatagrid",
+			        "pagination": 			"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
+				    "orderController":		"src/Sidekick-Bootstrap/Sidekick-Bootstrap-OrderController",
+				    "addClassMonad":		"src/common/AddClassLookupMonad"
+			    }
+			});
+			require(["jquery", "ko", "customizableDatagrid","pagination","orderController"], function($, ko, datagrid) {
+			   $(document).ready (function () {
+					ko.applyBindings ({
+						datagridVM: {
+							
+							
+							dataSource:{
+								read:function(itemPerPage,actualPage,callback,field,ascDesc){
+									var items = [
+								        {name: "Alfa",age:26,course:"math"},
+								        {name: "Wolfram",age:24,course:"programing"},
+								        {name: "Beta",age:24,course:"gaming"},
+								        {name: "Zed",age:24,course:"graphics"},
+								        {name: "John",age:24,course:"literature"},
+								        {name: "Del",age:24,course:"modern arts"},
+								        {name: "Control",age:24,course:"arts"},
+								        {name: "Fred",age:22,course:"writing"}];
+									
+									if (itemPerPage*actualPage>=items.length){
+										actualPage=0;
+									}
+									
+									if (ascDesc!=="none"){
+										items.sort(function(a,b){
+											if (ascDesc==="asc"){
+												return a[field]>b[field];
+											} else {
+												return a[field]<b[field];
+											}
+										});	
+									}
+										
+									if (itemPerPage!=="all"){
+										var retItem=[];
+										for (var i=0; i<itemPerPage; i=i+1){
+											if (actualPage*itemPerPage+i<items.length){
+												retItem.push(items[actualPage*itemPerPage+i]);	
+											}
+										}
+										
+									} else {
+										var retItem=items;
+									}
+										
+										
+									callback(retItem);
+									//alert("Ordering By: "+field+" Asc or Desc: "+ascDesc);
+									
+								}
+								
+							},
+							options:{
+								pagination: {
+									actualPage: ko.observable(0),
+									elementNumber: 8,
+									elementPerPage: ko.observable(2),
+									selectorValue:ko.observable(2),								
+									callback: function(i){
+									
+									},
+									size: "small",
+									align: "center",
+									selector: [
+									           {value: 1, label:"1"},
+									           {value:2, label:"2"},
+									           {value:4,label:"4"},
+									           {value: "all" , label:"All"}]
+									
+								},
+								orderings:{
+									byName:{
+										field: "name",
+										ascDesc:ko.observable("asc"),
+										label: "Full Name"
+									},
+									byCourse:{
+										field: "course",
+										ascDesc:ko.observable("none"),
+										label: "Course"
+									},
+									byAge:{
+										field: "age",
+										ascDesc:ko.observable("none"),
+										label: "Age"
+									}
+								}
+								
+							}
+					   }
+					});
+				});
+			});
+	</script>
+  </head>
+  <body>
+    <h1>Datagrid binding test</h1>
+    <div class="pull-right"> <select data-bind="options: datagridVM.options.pagination.selector, optionsText: 'label',optionsValue: 'value', value:  datagridVM.options.pagination.selectorValue"></select></div>
+    <table data-bind="customizableDatagrid: datagridVM" class="table table-bordered">
+    	<thead><tr><th data-bind="orderController: options.orderings.byName"></th>
+    	<th data-bind="orderController: options.orderings.byCourse"></th>
+    	<th data-bind="orderController: options.orderings.byAge"></th></thead>
+    	<tbody>
+    		<tr>
+    			<td data-bind="text: name"></td>
+    			<td data-bind="text: course"></td>
+    			<td data-bind="text: age"></td>
+    		</tr>
+    	</tbody>
+    </table>
+  </body>
+</html>

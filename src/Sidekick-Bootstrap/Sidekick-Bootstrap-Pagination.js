@@ -1,4 +1,4 @@
-define(["jquery", "ko", "../common/AddClassLookupMonad"], function($, ko, addClassLookupMonad) {
+define(["jquery", "ko", "addClassMonad"], function($, ko, addClassLookupMonad) {
 	var createCallbackCreator = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		return function (idx, callback) {
 			return function () {
@@ -46,7 +46,7 @@ define(["jquery", "ko", "../common/AddClassLookupMonad"], function($, ko, addCla
 		var size			= ko.utils.unwrapObservable(values.size);
 		var alignment		= ko.utils.unwrapObservable(values.align);
 		
-		
+
 		var elem = $(element);
 		
 		addAlignmentClass(elem)(alignment);

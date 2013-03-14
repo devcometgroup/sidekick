@@ -1,4 +1,4 @@
-define(["jquery", "ko", "bootstrap", "../common/AddClassLookupMonad"], function ($, ko, bootstrap, addClassLookupMonad) {
+define(["jquery", "ko", "bootstrap", "addClassMonad"], function ($, ko, bootstrap, addClassLookupMonad) {
 	var addStyleClass = addClassLookupMonad ({
 			"btn-primary":	"btn-primary",
 			"primary":		"btn-primary",

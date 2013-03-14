@@ -6,14 +6,16 @@ define(["jquery", "ko"], function($, ko) {
 		
 		//var options = ko.utils.unwrapObservable(values.options);
 		var dataSource = ko.utils.unwrapObservable(values.dataSource);
-		
-		var pagination= ko.utils.unwrapObservable(values.pagination);
+		 
+		var pagination= ko.utils.unwrapObservable(values.options.pagination);
+		var orderings =  ko.utils.unwrapObservable(values.options.orderings);
 		
 		var elem = $(element);
 		
 		var header = viewModel.__header__;
 		var content = viewModel.__content__;
 		
+	
 		
 		elem.empty();
 		
@@ -27,9 +29,20 @@ define(["jquery", "ko"], function($, ko) {
 			
 		};
 		
-		dataSource.read(pagination.elementPerPage,ko.utils.unwrapObservable(pagination.actualPage),callback);
+		var orderingKeys = Object.keys(orderings);
 		
+		var orderBy = "";
+		var ascDesc = "none";
 		
+		for(var i = 0; i<orderingKeys.length; i+=1){
+			if (ko.utils.unwrapObservable(orderings[orderingKeys[i]].ascDesc) !== "none"){
+				orderBy = orderings[orderingKeys[i]].field;
+				ascDesc = ko.utils.unwrapObservable(orderings[orderingKeys[i]].ascDesc);
+				break;
+			}			
+		}
+		
+		dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callback,orderBy,ascDesc);
 		
 		elem.append(header);
 
@@ -38,11 +51,16 @@ define(["jquery", "ko"], function($, ko) {
 		
 		elem.append(tbody);
 		
-		//elem.append($("<div data-bind=\"pagination: pagination\">"));
-		
 		values.items=items;
 		values.callback = function(orderBy,ascDesc){
-			dataSource.read(pagination.elementPerPage,ko.utils.unwrapObservable(pagination.actualPage),callback,orderBy,ascDesc);
+			orderingKeys = Object.keys(orderings);
+			for(var i = 0; i<orderingKeys.length; i+=1){
+				if (orderings[orderingKeys[i]].field !== orderBy){
+					orderings[orderingKeys[i]].ascDesc( "none" );
+				}			
+			}
+			
+			//dataSource.read(pagination.elementPerPage,ko.utils.unwrapObservable(pagination.actualPage),callback,ko.utils.unwrapObservable(orderBy),ko.utils.unwrapObservable(ascDesc));
 		};
 		
 		var innerBindingContext = bindingContext.extend(values);
@@ -50,7 +68,7 @@ define(["jquery", "ko"], function($, ko) {
 	};
 	
 
-	ko.bindingHandlers.datagrid = {
+	ko.bindingHandlers.customizableDatagrid = {
 			init:function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 				if ($(element).find('thead')[0]) {
 					var header = $(element).find('thead')[0].outerHTML;
@@ -70,13 +88,25 @@ define(["jquery", "ko"], function($, ko) {
 				
 				for(var i = 0; i<neighboursElements.length; i+=1){
 					if (neighboursElements[i]===element){
-						var newElement=$("<div/>").append($(element)).append($("<div id=\"pagination\" data-bind=\"pagination: pagination\">"));
+						var newElement=$("<div/>").append($(element)).append($("<div id=\"pagination\" data-bind=\"pagination: options.pagination\">"));
 						$(neighboursElements[i]).replaceWith(newElement);
 					
 					}
 				}
 				
 				var values = valueAccessor();
+				
+				if(values.options.pagination.selectorValue){
+					ko.computed(function (){
+						if (values.options.pagination.selectorValue()==="all"){
+							values.options.pagination.elementPerPage(values.options.pagination.elementNumber);
+						} else {
+							values.options.pagination.elementPerPage(ko.utils.unwrapObservable(values.options.pagination.selectorValue));
+						}
+					});
+					
+				}
+				
 				var outerBindingContext = bindingContext.extend(valueAccessor());
 				
 				ko.applyBindings(outerBindingContext,element.nextSibling);

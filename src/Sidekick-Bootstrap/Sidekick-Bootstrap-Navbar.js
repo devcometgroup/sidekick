@@ -1,4 +1,4 @@
-define(["jquery","ko", "../common/AddClassLookupMonad"], function($, ko, addClassLookup) {
+define(["jquery","ko", "addClassMonad"], function($, ko, addClassLookup) {
 	var addAlignmentClass = addClassLookup ({
 			"pull-left":		"pull-left",
 			"left":				"pull-left",
