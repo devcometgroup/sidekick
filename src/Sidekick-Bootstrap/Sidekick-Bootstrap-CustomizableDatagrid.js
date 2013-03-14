@@ -1,4 +1,3 @@
-//TODO: the table binding must be put into a separate <div>, or it won't allow bindings after itself
 define(["jquery", "ko"], function($, ko) {
 	var templates = [];
 	
@@ -102,13 +101,7 @@ define(["jquery", "ko"], function($, ko) {
 				var neighboursElements = element.parentNode.childNodes;
 				
 				
-				for(var i = 0; i<neighboursElements.length; i+=1){
-					if (neighboursElements[i]===element){
-						var newElement=$("<div/>").append($(element)).append($("<div id=\"pagination\" data-bind=\"pagination: options.pagination\">"));
-						$(neighboursElements[i]).replaceWith(newElement);
-					
-					}
-				}
+				$(element).after($("<div id=\"pagination\" data-bind=\"pagination: options.pagination\">"));
 				
 				var values = valueAccessor();
 				
