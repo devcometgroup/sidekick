@@ -7,7 +7,6 @@ define(["jquery", "ko"], function($, ko) {
 	var update = function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
 		var values = valueAccessor();
 		
-		//var options = ko.utils.unwrapObservable(values.options);
 		var dataSource = ko.utils.unwrapObservable(values.dataSource);
 		 
 		var pagination= ko.utils.unwrapObservable(values.options.pagination);

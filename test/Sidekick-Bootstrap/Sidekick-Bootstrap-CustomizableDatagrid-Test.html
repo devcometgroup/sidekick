@@ -160,7 +160,8 @@
 								pagination: {
 									actualPage: ko.observable(0),
 									elementNumber: 8,
-									elementPerPage: ko.observable(2),							
+									elementPerPage: ko.observable(2),
+									selectorValue: ko.observable(2),
 									callback: function(i){
 									
 									},
@@ -190,7 +191,6 @@
     <div class="pull-right"> <select data-bind="options: datagridVM.options.pagination.selector, optionsText: 'label',optionsValue: 'value', value:  datagridVM.options.pagination.selectorValue"></select></div>
   	
   
-	
 	    <table data-bind="customizableDatagrid: datagridVM" class="table table-bordered">
 	    	<thead><tr><th data-bind="orderController: options.orderings.byName"></th>
 	    	<th data-bind="orderController: options.orderings.byCourse"></th>
@@ -203,6 +203,7 @@
 	    		</tr>
 	    	</tbody>
 	    </table>
+	
 	
     <h4>Ordelable only by name, and always two items appears on a page</h4>
    <div>
