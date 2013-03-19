@@ -78,7 +78,7 @@ define(["jquery", "ko"], function($, ko) {
 				}
 				if (updateButton){
 					var updateTemp= $("<td/>");
-					var buttonTemp=$("<button />");
+					var buttonTemp=$("<button>");
 					if (updateButton.icon){
 						if (updateButton.label){
 							buttonTemp.append($("<i class=\""+updateButton.icon+"\"></i>")).append(updateButton.label);
@@ -104,12 +104,12 @@ define(["jquery", "ko"], function($, ko) {
 							actTr.empty();
 							for (var j = 0; j<header.length; j+=1){
 								if (header[j].type==="number"){
-									var input = $("<input type=number name=\""+header[j].prop+"\"/>");
+									var input = $("<input class=\"input-block-level\" type=number name=\""+header[j].prop+"\"/>");
 									input[0].value=item[header[j].prop];
 									
 									//.append( items()[i][header[j].prop]);
 								} else if (header[j].type==="text"){
-									var input =$("<input type=text name=\""+header[j].prop+"\" />");
+									var input =$("<input class=\"input-block-level\" type=text name=\""+header[j].prop+"\" />");
 									//.append( items()[i][header[j].prop]);
 									input[0].value=item[header[j].prop];
 								}
@@ -122,7 +122,7 @@ define(["jquery", "ko"], function($, ko) {
 							}
 							
 							var td=$("<td/>");
-							var ok = $("<button/>").append($("<i class=\"icon-ok\">"));
+							var ok = $("<button />").append($("<i class=\"icon-ok\">"));
 							var updateAct = function(item,actTr){
 								return function(){		
 									for (var j = 0; j<header.length; j+=1){
@@ -190,9 +190,6 @@ define(["jquery", "ko"], function($, ko) {
 				}			
 			}
 			
-			dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callbackRead,orderBy,ascDesc);
-			
-			
 			var thead = $("<thead />");
 			
 			
@@ -213,6 +210,10 @@ define(["jquery", "ko"], function($, ko) {
 			}
 			
 			thead.appendTo(table);
+			
+
+			dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callbackRead,orderBy,ascDesc);
+			
 			
 
 			table.appendTo(elem);
