@@ -9,7 +9,7 @@ define(["jquery", "ko"], function($, ko) {
 			values.options.pagination.size= "small";
 			values.options.pagination.align= "center";
 			values.options.pagination.callback = function(i){
-				
+				//the changing of the current page does the work
 			};
 
 			values.options.orderings={};
@@ -51,16 +51,7 @@ define(["jquery", "ko"], function($, ko) {
 			elem.empty();
 			
 			var items = ko.observableArray();
-			
-			ko.computed(function(){
-				var newItems = items();
-				for (var i = 0; i<newItems.length;i+=1){
-					newItems[i].edit=ko.observable(false);
-				}
-				items = ko.observableArray(newItems);
-			});
-			
-			
+	
 			values.callback = function(orderBy,ascDesc){
 				orderingKeys = Object.keys(values.options.orderings);
 				for(var i = 0; i<orderingKeys.length; i+=1){
@@ -70,21 +61,119 @@ define(["jquery", "ko"], function($, ko) {
 				}
 				
 
-				dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callback,orderBy,ascDesc);
+				dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callbackRead,orderBy,ascDesc);
 				
 			};
 			
-			var callback= function(newItems){
+
+			
+			var table = $("<table class=\"table table-bordered\" />");
+			
+			
+			
+			var createRow = function(item,actTr){
+				for (var j = 0; j<header.length; j+=1){
+					var td = $("<td/>").append( item[header[j].prop]);
+					td.appendTo(actTr);
+				}
+				if (updateButton){
+					var updateTemp= $("<td/>");
+					var buttonTemp=$("<button />");
+					if (updateButton.icon){
+						if (updateButton.label){
+							buttonTemp.append($("<i class=\""+updateButton.icon+"\"></i>")).append(updateButton.label);
+						} else {
+							buttonTemp.append($("<i class=\""+updateButton.icon+"\"/>"));
+						}
+					} else if (updateButton.label){
+						buttonTemp.append(updateButton.label);
+					} else {
+						buttonTemp.append($("<i class=\"icon-edit\"/>"));
+					}
+					
+					
+					var callback  = function(item,actTr){
+						
+						return function(){
+							
+							/*for(var i = 0; i<orderingKeys.length; i+=1){
+								values.options.orderings[orderingKeys[i]].ascDesc( "none" );
+										
+							}*/
+							
+							actTr.empty();
+							for (var j = 0; j<header.length; j+=1){
+								if (header[j].type==="number"){
+									var input = $("<input type=number name=\""+header[j].prop+"\"/>");
+									input[0].value=item[header[j].prop];
+									
+									//.append( items()[i][header[j].prop]);
+								} else if (header[j].type==="text"){
+									var input =$("<input type=text name=\""+header[j].prop+"\" />");
+									//.append( items()[i][header[j].prop]);
+									input[0].value=item[header[j].prop];
+								}
+								var td = $("<td/>").append(input);
+								td.appendTo(actTr);
+
+								
+								
+								
+							}
+							
+							var td=$("<td/>");
+							var ok = $("<button/>").append($("<i class=\"icon-ok\">"));
+							var updateAct = function(item,actTr){
+								return function(){		
+									for (var j = 0; j<header.length; j+=1){
+										item[header[j].prop] = actTr.find("input[name=\""+header[j].prop+"\"]")[0].value;
+									}
+									
+							dataSource.update(item);
+							actTr.empty();
+							createRow(item,actTr);
+								};
+							};
+							ok.click(updateAct(item,actTr));
+							ok.appendTo(td);
+							
+							var cncl =  $("<button/>").append($("<i class=\"icon-remove\">"));
+							var cancel = function(){
+								return function(){
+									actTr.empty();
+									createRow(item,actTr);
+								};
+							};
+							cncl.click(cancel());
+							cncl.appendTo(td);
+							
+							td.appendTo(actTr);
+						};
+					};
+					
+					buttonTemp.click(callback(item,actTr));
+					updateTemp.append(buttonTemp);
+					updateTemp.appendTo(actTr);
+					
+				}
+				
+			};
+			
+			
+			var callbackRead = function(newItems){
 				items.removeAll();
 				for (var i=0; i<newItems.length;i+=1){
 					items.push(newItems[i]);
 				}
 				
-				var itemsTemp = items();
-				for (var i = 0; i<itemsTemp.length;i+=1){
-					itemsTemp[i].edit=ko.observable(false);
+				var tbody = $("<tbody/>");
+				for(var i = 0; i < items().length; i+=1){
+					var tr = $("<tr/>");
+					createRow(items()[i],tr);
+					tr.appendTo(tbody);
+					
 				}
-				items = ko.observableArray(itemsTemp);
+				tbody.appendTo(table);
 				
 			};
 			
@@ -101,10 +190,8 @@ define(["jquery", "ko"], function($, ko) {
 				}			
 			}
 			
-			dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callback,orderBy,ascDesc);
+			dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callbackRead,orderBy,ascDesc);
 			
-			
-			var table = $("<table class=\"table table-bordered\" />");
 			
 			var thead = $("<thead />");
 			
@@ -127,38 +214,6 @@ define(["jquery", "ko"], function($, ko) {
 			
 			thead.appendTo(table);
 			
-			
-			var tbody = $("<tbody data-bind=\"foreach:items\"/>");
-			
-			
-				var tr = $("<tr/>");
-				
-				for (var j = 0; j<header.length; j+=1){
-					var td = $("<td data-bind=\"text:"+header[j].prop+"\"></td>");
-					td.appendTo(tr);
-				}
-				if (updateButton){
-					var updateTemp= $("<td/>");
-					var buttonTemp=$("<button data-bind=\"click: function(place){console.log(place);place.edit(!place.edit)}\"/>");
-					if (updateButton.icon){
-						if (updateButton.label){
-							buttonTemp.append($("<i class=\""+updateButton.icon+"\"></i>")).append(updateButton.label);
-						} else {
-							buttonTemp.append($("<i class=\""+updateButton.icon+"\"/>"));
-						}
-					} else if (updateButton.label){
-						buttonTemp.append(updateButton.label);
-					} else {
-						buttonTemp.append($("<i class=\"icon-edit\"/>"));
-					}
-					buttonTemp;
-					updateTemp.append(buttonTemp);
-					updateTemp.appendTo(tr);
-					
-				}
-				tr.appendTo(tbody);
-				
-			tbody.appendTo(table);
 
 			table.appendTo(elem);
 			values.items=items;

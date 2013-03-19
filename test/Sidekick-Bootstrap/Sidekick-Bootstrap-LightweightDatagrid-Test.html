@@ -21,21 +21,21 @@
 			});
 			require(["jquery", "ko", "lightweightDatagrid","pagination","orderController"], function($, ko, datagrid) {
 			   $(document).ready (function () {
+				  var  items = [
+					        {name: "Alfa",age:26,course:"math",id:1},
+					        {name: "Wolfram",age:24,course:"programing",id:2},
+					        {name: "Beta",age:24,course:"gaming",id:3},
+					        {name: "Zed",age:24,course:"graphics",id:4},
+					        {name: "John",age:24,course:"literature",id:5},
+					        {name: "Del",age:24,course:"modern arts",id:6},
+					        {name: "Control",age:24,course:"arts",id:7},
+					        {name: "Fred",age:22,course:"writing",id:8}];
 					ko.applyBindings ({
 						datagridVM: {
 							
-							
 							dataSource:{
 								read:function(itemPerPage,actualPage,callback,field,ascDesc){
-									var items = [
-								        {name: "Alfa",age:26,course:"math"},
-								        {name: "Wolfram",age:24,course:"programing"},
-								        {name: "Beta",age:24,course:"gaming"},
-								        {name: "Zed",age:24,course:"graphics"},
-								        {name: "John",age:24,course:"literature"},
-								        {name: "Del",age:24,course:"modern arts"},
-								        {name: "Control",age:24,course:"arts"},
-								        {name: "Fred",age:22,course:"writing"}];
+									
 									
 									if (itemPerPage*actualPage>=items.length){
 										actualPage=0;
@@ -68,7 +68,12 @@
 									//alert("Ordering By: "+field+" Asc or Desc: "+ascDesc);
 									
 								},
-								update: function(id,values){
+								update: function(updatedItem){
+									for (var i = 0 ; i < items.length; i+=1){
+										if (items[i].id===updatedItem.id){
+											items[i]=updatedItem;
+										}
+									}
 
 								}
 								
