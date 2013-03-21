@@ -21,21 +21,31 @@
 			});
 			require(["jquery", "ko", "lightweightDatagrid","pagination","orderController"], function($, ko, datagrid) {
 			   $(document).ready (function () {
-				  var  items = [
-					        {name: "Alfa",age:26,course:"math",id:1},
-					        {name: "Wolfram",age:24,course:"programing",id:2},
-					        {name: "Beta",age:24,course:"gaming",id:3},
-					        {name: "Zed",age:24,course:"graphics",id:4},
-					        {name: "John",age:24,course:"literature",id:5},
-					        {name: "Del",age:24,course:"modern arts",id:6},
-					        {name: "Control",age:24,course:"arts",id:7},
-					        {name: "Fred",age:22,course:"writing",id:8}];
+				  var  observableItems = ko.observableArray([
+					        {name: "Alfa",age:26,course:"math",done: true,id:1},
+					        {name: "Wolfram",age:24,course:"programing",done: false,id:2},
+					        {name: "Beta",age:24,course:"gaming",done: true,id:3},
+					        {name: "Zed",age:24,course:"graphics",done: false,id:4},
+					        {name: "John",age:24,course:"literature",done: false,id:5},
+					        {name: "Del",age:24,course:"modern arts",done: true,id:6},
+					        {name: "Control",age:24,course:"arts",done: false,id:7},
+					        {name: "Fred",age:22,course:"writing",done: true,id:8}]);
+				  
+				  var instertItemToDummyDb = (function () {
+					  var nextId = 9;
+					  return function (item) {
+						  item.id = nextId;
+						  nextId += 1;
+						  observableItems.push(item);
+					  };
+				  }());
+				  
 					ko.applyBindings ({
 						datagridVM: {
 							
 							dataSource:{
 								read:function(itemPerPage,actualPage,callback,field,ascDesc){
-									
+									items=observableItems();
 									
 									if (itemPerPage*actualPage>=items.length){
 										actualPage=0;
@@ -69,19 +79,31 @@
 									
 								},
 								update: function(updatedItem){
-									for (var i = 0 ; i < items.length; i+=1){
-										if (items[i].id===updatedItem.id){
-											items[i]=updatedItem;
+									for (var i = 0 ; i < observableItems().length; i+=1){
+										if (observableItems()[i].id===updatedItem.id){
+											observableItems()[i]=updatedItem;
 										}
 									}
 
+								},
+								del: function(deletedItem){
+								
+									observableItems.remove(deletedItem);
+										
+									
+								},
+								insert: function(newItem){
+							
+									instertItemToDummyDb(newItem);
 								}
 								
 							},
 							options:{
 								pagination: {
 									//actualPage: ko.observable(0),
-									elementNumber: 8,
+									elementNumber: ko.computed(function(){
+										return observableItems().length;
+									}),
 									//elementPerPage: ko.observable(2),
 									selectorValue:ko.observable(2),								
 									/*callback: function(i){
@@ -97,13 +119,25 @@
 									
 								},
 								header:[
-									{label:"Full name", prop:"name", orderable:true,type:"text"},
-									{label:"Course", prop:"course", orderable:true,type:"text"},
-									{label:"Age", prop:"age", orderable:false,type:"number"}
+									{label:"Full name", prop:"name", orderable:true,type:"text",editable:false},
+									{label:"Course", prop:"course", orderable:true,type:"text",insertable:false},
+									{label:"Age", prop:"age",type:"number"},
+									{label:"Finished",prop:"done",type:"bool"}
 									],
-								updateButton:{
-									label: "Update",
-									icon: "icon-edit"
+									updateButton:{
+										label: "Update",
+										icon: "icon-edit"
+									},
+									deleteButton:{
+										label: "Delete",
+										icon: "icon-trash",
+										question: "Do you really want to delete?",
+										yes: "Yes",
+										cancel: "Cancel"
+									},
+								insertButton:{
+									label: "Insert",
+									icon: "icon-plus"
 								}
 								}
 								
