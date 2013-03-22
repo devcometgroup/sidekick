@@ -5,7 +5,13 @@ define(["jquery", "ko"], function($, ko) {
 			var values = valueAccessor();
 			
 			values.options.pagination.actualPage= ko.observable(0);
+
 			values.options.pagination.elementPerPage= ko.observable(2);
+			ko.computed( function(){
+				values.options.pagination.elementPerPage();
+				values.options.pagination.actualPage(0);
+			});
+			
 			values.options.pagination.size= "small";
 			values.options.pagination.align= "center";
 			values.options.pagination.callback = function(i){
@@ -166,7 +172,9 @@ define(["jquery", "ko"], function($, ko) {
 						var input = $("<input type=\"checkbox\" name=\""+actHeader.prop+"\"  >");
 					}
 				}
-				
+				if (actHeader.required===true){
+					input.prop("required",true);
+				}
 				cell.append(input);
 			};
 			
@@ -203,25 +211,20 @@ define(["jquery", "ko"], function($, ko) {
 								actTr.empty();
 								for (var j = 0; j<header.length; j+=1){
 									if (header[j].editable!==false){
-										
 									var td = $("<td/>");
 									createEditableCell(header[j],td,item);
-									
-									
 									} else {
 										var td = $("<td/>");
 										createNormalCell(item,header[j],td);
 									}
-									
-									
-									
 									td.appendTo(actTr);
-	
-									
-									
-									
 								}
-								
+								var cancel = function(actTr){
+									return function(){
+										actTr.empty();
+										createRow(item,actTr);
+									};
+								};
 								var td=$("<td/>");
 								var ok = $("<button />").append($("<i class=\"icon-ok\">"));
 								var updateAct = function(item,actTr){
@@ -243,21 +246,63 @@ define(["jquery", "ko"], function($, ko) {
 										}
 									}
 											
-									dataSource.update(item);
-									actTr.empty();
-									createRow(item,actTr);
+									var updateSuccess = function(text){
+										if (!text){
+											text="Update successful";
+										}
+										actTr.empty();
+										createRow(item,actTr);
+										var lastcell = $(actTr[0].lastChild);
+										
+										lastcell.empty();
+										lastcell.append(text);
+										lastcell.addClass("alert alert-success");
+										
+										window.setTimeout(function(){
+											actTr.empty();
+											createRow(item,actTr);
+										},1000);
+									};
+									
+									var updateFail = function(text){
+										if (!text){
+											text="Update failed";
+										}
+										var lastcell = $(actTr[0].lastChild);
+										lastcell.empty();
+										
+										lastcell.append(text);
+										lastcell.addClass("alert alert-error");
+										
+										window.setTimeout(function(){
+											lastcell.empty();
+											lastcell.removeClass("alert alert-error");
+											var ok = $("<button />").append($("<i class=\"icon-ok\">"));
+
+											var cncl =  $("<button/>").append($("<i class=\"icon-remove\">"));
+											
+											ok.click(updateAct(item,actTr));
+											ok.appendTo(lastcell);
+											
+											cncl.click(cancel(actTr));
+											cncl.appendTo(lastcell);
+											
+											
+											
+										},1000);
+										
+									};
+									
+									dataSource.update(item,updateSuccess,updateFail);
+									
+
 									};
 								};
 								ok.click(updateAct(item,actTr));
 								ok.appendTo(td);
 								
 								var cncl =  $("<button/>").append($("<i class=\"icon-remove\">"));
-								var cancel = function(actTr){
-									return function(){
-										actTr.empty();
-										createRow(item,actTr);
-									};
-								};
+								
 								cncl.click(cancel(actTr));
 								cncl.appendTo(td);
 								
@@ -287,18 +332,66 @@ define(["jquery", "ko"], function($, ko) {
 						return function(){
 							
 						buttonsTemp.empty();
-						buttonsTemp.append("<p>"+deleteButton.question+"</p>");
+						buttonsTemp.append(deleteButton.question);
+						
+						var buttongroup = $("<div class=\"btn-group\" />");
 						var ok = $($("<button />").append($("<i class=\"icon-ok\">")).append(deleteButton.yes));
 						var delcall = function(item,actTr){
 							return function(){
-								dataSource.del(actItem);
+								var deleteSuccess = function(text){
+									if (!text){
+										text="Delete successful";
+									}
+								/*	var lastcell = $(thead[0].lastChild);
+									lastcell.empty();
+										
+									lastcell.append("<p>Delete sucessfull<p>");
+									*/
+									
+									window.setTimeout(function(){
+										var alertcell = $(elem[0].lastChild.firstChild.lastChild);
+										
+										//alertcell.append("<div class=\"alert alert-success\">"+text+"</div>");
+										alertcell.addClass("alert alert-success");
+										alertcell.append(text);
+										
+									},10);
+
+									window.setTimeout(function(){
+										var alertcell = $(elem[0].lastChild.firstChild.lastChild);
+										alertcell.removeClass("alert alert-success");
+										alertcell.empty();
+									},1000);
+									
+									
+								};
+								
+								var deleteFail = function(text){
+									if (!text){
+										text="Delete failed";
+									}
+									
+									var lastcell = $(actTr[0].lastChild);
+									lastcell.empty();
+									
+									//lastcell.append("<div class=\"alert alert-error\">"+text+"</div>");
+									lastcell.append(text);
+									lastcell.addClass("alert alert-error");
+
+									window.setTimeout(function(){
+										actTr.empty();
+										createRow(item,actTr);
+										
+									},1000);
+								};
+								
+								dataSource.del(actItem,deleteSuccess,deleteFail);
 								//actTr.empty();
-								dataSource.read(ko.utils.unwrapObservable(pagination.elementPerPage),ko.utils.unwrapObservable(pagination.actualPage),callbackRead,orderBy,ascDesc);
 								
 							};
 						};
 						ok.click(delcall(item,actTr));
-						ok.appendTo(buttonsTemp);
+						ok.appendTo(buttongroup);
 						
 						var cncl =  $($("<button/>").append($("<i class=\"icon-remove\">")).append(deleteButton.cancel));
 						var delcancel = function(actTr){
@@ -308,7 +401,11 @@ define(["jquery", "ko"], function($, ko) {
 							};
 						};
 						cncl.click(delcancel(actTr));
-						cncl.appendTo(buttonsTemp);
+						cncl.appendTo(buttongroup);
+						
+						buttonsTemp.addClass("alert alert-error");
+						
+						buttonsTemp.append(buttongroup);
 						
 						//td.appendTo(actTr);
 						
@@ -372,7 +469,7 @@ define(["jquery", "ko"], function($, ko) {
 					actTr.empty();
 					for (var j = 0; j<header.length; j+=1){
 						var td = $("<td/>");
-						td.appendTo(tfoot);
+						td.appendTo(actTr);
 					}
 					var buttonsTemp= $("<td/>");
 				
@@ -412,11 +509,91 @@ define(["jquery", "ko"], function($, ko) {
 							var ok = $("<button />").append($("<i class=\"icon-ok\">"));
 							var insertNew = function(actTr){
 								return function(){
-									var item={};
-									
-									for (var j = 0; j<header.length; j+=1){
-										if (header[j].insertable!==false){
+									var insertSuccess = function(text){
+										if (!text){
+											text="Insert successful";
+										}
+										window.setTimeout(function(){
+											var lastRow=$(elem[0].lastChild.lastChild);
+											lastRow.empty();
+											//createRow(item,lastRow);
+											createFooter(lastRow);
+											
+											//$(lastRow[0].lastChild).empty();
+											//$(lastRow[0].lastChild).append("<div class=\"alert alert-success\">"+text+"</div>");
+											$(lastRow[0].lastChild).append("<div>"+text+'</div>');
+											$(lastRow[0].lastChild).addClass("alert alert-success");
+											
+										},10);
+
+										window.setTimeout(function(){
+											var lastCell=$(elem[0].lastChild.lastChild.lastChild.lastChild);
+											if (lastCell[0].tagName==="DIV"){
+												$(lastCell[0].parentNode).removeClass("alert alert-success");
+												lastCell.remove();
 												
+											}
+											
+											
+											
+											
+											
+											//lastRow.empty();
+											//createFooter(lastRow);
+										},3000);
+										
+									};
+									
+									var insertFail = function(text){
+										if (!text){
+											text="Insert failed";
+										}
+										var lastcell = $(actTr[0].lastChild);
+										lastcell.empty();
+										
+										//lastcell.append("<div class=\"alert alert-error\">"+text+"</div>");
+										lastcell.append(text);
+										lastcell.addClass("alert alert-error");
+										
+										window.setTimeout(function(){
+											lastcell.empty();
+											lastcell.removeClass("alert alert-error");
+											var ok = $("<button />").append($("<i class=\"icon-ok\">"));
+
+											var cncl =  $("<button/>").append($("<i class=\"icon-remove\">"));
+											
+											ok.click(insertNew(actTr));
+											ok.appendTo(lastcell);
+											
+											cncl.click(cancel(actTr));
+											cncl.appendTo(lastcell);
+											
+											
+											
+										},2000);
+										
+										
+									};
+									
+									var item={};
+									var reqInputMiss = 0;
+									for (var j = 0; j<header.length; j+=1){
+									
+										if (header[j].insertable!==false){
+											if (header[j].required===true){
+												if (header[j].type!=="bool"){
+													var actInput = actTr.find("input[name=\""+header[j].prop+"\"]")[0]; 
+													if (actInput.value==="" ||actInput.value===undefined){
+														
+														reqInputMiss = 1;
+														
+														$(actInput.parentElement).addClass ("control-group error");
+														$(actInput).focus(function() {
+															$(actInput.parentElement).removeClass("control-group error");
+														});
+													}										
+												}
+											}
 											if (header[j].type!=="bool"){
 												item[header[j].prop] = actTr.find("input[name=\""+header[j].prop+"\"]")[0].value;										
 											} else {
@@ -425,9 +602,20 @@ define(["jquery", "ko"], function($, ko) {
 										}
 									}
 									
+
+									if (reqInputMiss===1){
+										if (insertButton.someFieldReq){
+											insertFail(insertButton.someFieldReq);
+										} else {
+											insertFail("Some required field is missing");
+										}
+										
+										return;
+									}
 									
+								
 									
-								dataSource.insert(item);
+									dataSource.insert(item,insertSuccess,insertFail);
 								};
 							};
 							ok.click(insertNew(actTr));

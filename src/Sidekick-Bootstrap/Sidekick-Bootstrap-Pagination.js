@@ -55,7 +55,9 @@ define(["jquery", "ko", "addClassMonad"], function($, ko, addClassLookupMonad) {
 		
 		var ulElement = $("<ul/>");
 		var length = elementNumber / elementPerPage;
-		
+		if (length === 0 || length === Infinity || isNaN(length) ){
+			length=1;
+		}
 		var createCallback = createCallbackCreator(element, valueAccessor, allBindingsAccessor, viewModel);
 		
 		var hrefActElement = $("<a href=\"#\">&laquo;</a>");

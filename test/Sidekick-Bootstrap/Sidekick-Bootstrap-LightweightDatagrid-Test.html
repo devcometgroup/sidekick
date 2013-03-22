@@ -15,11 +15,10 @@
 			        "ko":					"lib/knockout-2.2.1.debug",
 			        "lightweightDatagrid":	"src/Sidekick-Bootstrap/Sidekick-Bootstrap-LightweightDatagrid",
 			        "pagination": 			"src/Sidekick-Bootstrap/Sidekick-Bootstrap-Pagination",
-				    "orderController":		"src/Sidekick-Bootstrap/Sidekick-Bootstrap-OrderController",
 				    "addClassMonad":		"src/common/AddClassLookupMonad"
 			    }
 			});
-			require(["jquery", "ko", "lightweightDatagrid","pagination","orderController"], function($, ko, datagrid) {
+			require(["jquery", "ko", "lightweightDatagrid","pagination"], function($, ko, datagrid) {
 			   $(document).ready (function () {
 				  var  observableItems = ko.observableArray([
 					        {name: "Alfa",age:26,course:"math",done: true,id:1},
@@ -78,23 +77,37 @@
 									//alert("Ordering By: "+field+" Asc or Desc: "+ascDesc);
 									
 								},
-								update: function(updatedItem){
+								update: function(updatedItem,updateSuccess,updateFail){
+									if (Math.random()<0.9){									
 									for (var i = 0 ; i < observableItems().length; i+=1){
 										if (observableItems()[i].id===updatedItem.id){
 											observableItems()[i]=updatedItem;
 										}
 									}
+									updateSuccess("The update was successfull!");
+									}
+									else {
+										updateFail("The update failed!");
+									}
 
 								},
-								del: function(deletedItem){
-								
-									observableItems.remove(deletedItem);
+								del: function(deletedItem,deleteSuccess,deleteFail){
+									if (Math.random()<0.9){			
+										deleteSuccess();
+										observableItems.remove(deletedItem);
+									} else {
+										deleteFail();
+									}
 										
 									
 								},
-								insert: function(newItem){
-							
-									instertItemToDummyDb(newItem);
+								insert: function(newItem,insertSuccess,insertFail){
+									if (Math.random()<0.9){									
+										insertSuccess("The insertion was successfull!")
+										instertItemToDummyDb(newItem);
+									} else {
+										insertFail("The insertion failed!");
+									}
 								}
 								
 							},
@@ -105,7 +118,8 @@
 										return observableItems().length;
 									}),
 									//elementPerPage: ko.observable(2),
-									selectorValue:ko.observable(2),								
+									selectorValue:ko.observable(2),
+									
 									/*callback: function(i){
 									
 									},*/
@@ -119,7 +133,7 @@
 									
 								},
 								header:[
-									{label:"Full name", prop:"name", orderable:true,type:"text",editable:false},
+									{label:"Full name", prop:"name", orderable:true,type:"text",editable:false,required:true},
 									{label:"Course", prop:"course", orderable:true,type:"text",insertable:false},
 									{label:"Age", prop:"age",type:"number"},
 									{label:"Finished",prop:"done",type:"bool"}
@@ -137,7 +151,8 @@
 									},
 								insertButton:{
 									label: "Insert",
-									icon: "icon-plus"
+									icon: "icon-plus",
+									
 								}
 								}
 								
