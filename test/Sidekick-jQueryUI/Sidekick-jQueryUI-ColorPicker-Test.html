@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="stylesheet" href="./../../lib/jquery-ui-1.10.1.custom/css/ui-lightness/jquery-ui-1.10.1.custom.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="./../../lib/colorpicker/jquery.colorpicker.css" type="text/css" media="all" />
+		
+		<script src="./../../lib/require.js"></script>
+		<script>
+			requirejs.config({
+			    baseUrl: '../../',
+			    paths: {
+			        "jquery": 'lib/jquery-1.9.1',
+			        "ko": 'lib/knockout-2.2.1.debug',
+			        "jqueryui": 'lib/jquery-ui-1.10.1.custom/js/jquery-ui-1.10.1.custom',
+			        "colorpicker": "lib/colorpicker/jquery.colorpicker",
+			        "colorpicker-bind": "src/Sidekick-jQueryUI/Sidekick-jQueryUI-Colorpicker"
+			    },
+			    shim: {
+			    	"colorpicker": {
+			    		deps: ["jquery","jqueryui"]
+			    	}
+			    }
+			});
+			require(["jquery","ko","colorpicker-bind"], function($,ko,colorpicker) {
+			   $(document).ready (function () {
+				 
+					ko.applyBindings ({
+						params: {
+							options:{
+								parts:				'draggable',
+						
+								modal:				true,
+								inline: 			false
+							},
+						value: ko.observable('00ff00')
+						}
+					});
+		
+				});
+			});
+		</script>
+		
+	</head>	
+	<body>
+		<button data-bind="colorPicker: params" >Color Picker</button>
+		<div data-bind="text:params.value"></div>
+			
+	</body>
+</html>
+	
